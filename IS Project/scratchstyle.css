@@ -1,0 +1,88 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+body {
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    background-color: #e3f2ff;
+    color: #3e3e3e;
+    line-height: 1.7;
+}
+
+.header{
+    background-image: url("youngchang.jpg");
+    background-size: cover;
+    background-position: center;
+    height: 280px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 6px solid #a3d3fd;
+}
+
+.headerfont h1{
+    background-color: rgba(255,255,255,0.8);
+    padding: 1rem 2rem;
+    font-size: 2.5rem;
+    color: #e3f2ff;
+    letter-spacing: 1px;
+    text-align: center;
+    border-radius: 20px
+}
+
+.content{
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 0 2rem;
+}
+h2 {
+    font-size: 1.8rem;
+    color: #282b2c;
+    margin-top: 3rem;
+}
+
+p {
+    font-size: 1rem;
+}
+
+ol {
+    font-weight: bold;
+    margin-left: 1.5rem;
+}
+
+ol > li {
+    margin-bottom: 1rem;
+}
+
+ol ul {
+    font-weight: normal;
+    margin-top: 0.5rem;
+    margin-left: 1.5rem;
+}
+
+ol ul li {
+    margin-bottom: 0.4rem;
+}
+
+.video iframe {
+    border-radius: 20px;
+    box-shadow: 0 10px 25px rgba(171, 227, 251, 0.643);
+}
+
+a {
+    color: #5da1db;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+    .header {
+        height: 200px;
+    }
+}

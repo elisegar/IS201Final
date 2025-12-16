@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>LDS Wordle</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #e3f2ff; 
+      color: #0d47a1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 40px;
+    }
+
+    h1 {
+      letter-spacing: 3px;
+      margin-bottom: 10px;
+      color: #0d47a1;
+    }
+
+    .instructions {
+      max-width: 600px;
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 1.1rem;
+    }
+
+    .board {
+      display: grid;
+      grid-template-rows: repeat(6, 1fr);
+      gap: 10px;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+    }
+
+    .tile {
+      width: 60px;
+      height: 60px;
+      border: 2px solid #0d47a1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      color: #0d47a1;
+      transition: background-color 0.4s, color 0.4s;
+    }
+
+    .correct {
+      background-color: #0d47a1;
+      color: #ffffff;
+      border-color: #0d47a1;
+    }
+
+    .present {
+      background-color: #5c6bc0;
+      color: #ffffff;
+      border-color: #5c6bc0;
+    }
+
+    .absent {
+      background-color: #cfd8dc;
+      color: #0d47a1;
+      border-color: #cfd8dc;
+    }
+
+    .message {
+      margin-top: 20px;
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+
+    .play-again {
+      display: none;
+      margin-top: 15px;
+      padding: 0.8rem 1.5rem;
+      background-color: #0d47a1;
+      color: white;
+      border: none;
+      border-radius: 20px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .play-again:hover {
+      background-color: #1565c0;
+    }
+
+    @media (max-width: 768px) {
+      .tile {
+        width: 45px;
+        height: 45px;
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>LDS Wordle</h1>
+  <div class="instructions">
+    Guess the 5-letter LDS-themed word! <br>
+    Blue = correct, Light Blue = present, Gray = absent.
+  </div>
+
+  <div class="board" id="board"></div>
+  <div class="message" id="message"></div>
+  <button class="play-again" id="playAgainBtn">Play Again</button>
+
+  <script>
+    const WORD_LIST = ["FAITH","MOSES","ELIJA","NEPHI","LOVED","PRAYS","LIGHT","TRUTH","SERVE","GRACE","PEACE", "SAINT","JESUS", "BIBLE", "ANGEL"];
+    let WORD = WORD_LIST[Math.floor(Math.random() * WORD_LIST.length)];
+    const board = document.getElementById("board");
+    const messageDiv = document.getElementById("message");
+    const playBtn = document.getElementById("playAgainBtn");
+
+    let currentRow = 0;
+    let currentGuess = "";
+    let attempts = 0; // Counter for attempts
+
+    // Create board
+    function createBoard() {
+      board.innerHTML = "";
+      for (let i = 0; i < 6; i++) {
+        const row = document.createElement("div");
+        row.className = "row";
+        for (let j = 0; j < 5; j++) {
+          const tile = document.createElement("div");
+          tile.className = "tile";
+          row.appendChild(tile);
+        }
+        board.appendChild(row);
+      }
+    }
+
+    createBoard();
+
+    document.addEventListener("keydown", (e) => {
+      if (currentRow >= 6) return;
+
+      if (e.key === "Backspace") {
+        currentGuess = currentGuess.slice(0, -1);
+        updateRow();
+      } else if (e.key === "Enter") {
+        if (currentGuess.length === 5) {
+          attempts++; // increase attempts
+          checkGuess();
+          if (currentGuess === WORD) {
+            messageDiv.textContent = `🎉 You Win in ${attempts} attempt${attempts > 1 ? "s" : ""}! Great job!`;
+            endGame();
+          } else if (currentRow === 5) {
+            messageDiv.textContent = `❌ You Lose! The word was "${WORD}". You tried ${attempts} time${attempts > 1 ? "s" : ""}.`;
+            endGame();
+          }
+          currentGuess = "";
+          currentRow++;
+        }
+      } else if (/^[a-zA-Z]$/.test(e.key)) {
+        if (currentGuess.length < 5) {
+          currentGuess += e.key.toUpperCase();
+          updateRow();
+        }
+      }
+    });
+
+    function updateRow() {
+      const row = board.children[currentRow];
+      for (let i = 0; i < 5; i++) {
+        row.children[i].textContent = currentGuess[i] || "";
+      }
+    }
+
+    function checkGuess() {
+      const row = board.children[currentRow];
+      for (let i = 0; i < 5; i++) {
+        const letter = currentGuess[i];
+        if (letter === WORD[i]) {
+          row.children[i].classList.add("correct");
+        } else if (WORD.includes(letter)) {
+          row.children[i].classList.add("present");
+        } else {
+          row.children[i].classList.add("absent");
+        }
+      }
+    }
+
+    function endGame() {
+      currentRow = 6; // stop input
+      playBtn.style.display = "inline-block";
+    }
+
+    playBtn.addEventListener("click", () => {
+      WORD = WORD_LIST[Math.floor(Math.random() * WORD_LIST.length)];
+      currentRow = 0;
+      currentGuess = "";
+      attempts = 0;
+      messageDiv.textContent = "";
+      playBtn.style.display = "none";
+      createBoard();
+    });
+  </script>
+
+</body>
+</html>
